@@ -58,8 +58,8 @@ public class Main {
             props.put("bootstrap.servers", "ezdf02.hpe4d.local:9092");
             props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
             props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-            props.put("batch.size", Integer.toString(64 * 1024));
-            props.put("linger.ms", "40");
+            props.put("batch.size", Integer.toString(256 * 1024));
+            props.put("linger.ms", "70");
             String json = "{\n" +
                     "    \"syslog-timestamp8601\": \"2023-01-09T12:47:00.184Z\",\n" +
                     "    \"tags\": [\n" +
@@ -109,12 +109,14 @@ public class Main {
                 String topicName = "general-ocp4-application-logs";
                 Instant start = Instant.now();
 
-                for (int i = partition; i < 100_000_000; i += 8) {
-                    if (i % 100_000 == 0) {
+                for (int i = 0; i < 10_000_000; i++) {
+                    if (i % 1_00_000 == 0) {
                         Instant finish = Instant.now();
                         long timeElapsed = Duration.between(start, finish).toMinutes();
                         long timeElapsedSec = Duration.between(start, finish).toSeconds();
-                        System.out.println(i + " logs added to general-ocp4-application-logs" + " in " + timeElapsed + " minutes, which is :" + timeElapsedSec + " seconds");
+                        System.out.println(i + " logs added to general-ocp4-application-logs" + " in "
+                                + timeElapsed + " minutes, which is :" + timeElapsedSec + " seconds to partition: " + partition);
+
                     }
                     int randomIndex = (int) (Math.random() * appNames.size());
 
